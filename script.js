@@ -1,41 +1,90 @@
 //questions, choices and answers
 var questions = [{
-    title: "What color is an egplant?",
+    title: "What did the Buddhist say to the hot dog vendor?",
     choices: [
         {
-            text: "yellow", correct: false
+            text: "I can't eat that!", correct: false
         },
         {
-            text: "purple", correct: true
+            text: "Make me one with everything.", correct: true
         },
         {
-            text: "blue", correct: false
+            text: "Is that vegetarian?", correct: false
         },
         {
-            text: "red", correct: false
+            text: "Why is it called that?", correct: false
         },
     ]
 },
 {
-    title: "What is the smallest type of tomato?",
-    choices: ["heirloom( )", "grape( )", "roma( )", "cherry( )"],
-    answer: "cherry( )"
+    title: "Where does the General keep his armies?",
+    choices: [
+        {
+            text: "His back pocket.", correct: false
+        }, 
+        {   
+            text: "Who knows?", correct:false
+        },
+        {
+            text: "On base.", correct: false
+        },
+        {
+            text: "In his sleevies!", correct: true
+        },
+    ]
 },
 {
-    title: "Which of these fruits has seeds on the outside?",
-    choices: ["strawberry( )", "banana( )", "kiwi( )", "melon"],
-    answer: "strawberry( )"
+    title: "What does a pepper do when it’s angry?",
+    choices: [
+        {
+            text: "It gets jalapeño face!", correct: true
+        },
+        {
+            text: "Increases capsaicin.", correct: false
+        },
+        {
+            text: "Acts seedy.", correct: false
+        },
+        {
+            text: "Gets hot.", correct: false
+        },
+    ]
 },
 {
-    title: "Which of these is a berry?",
-    choices: ["nectarine( )", "papaya( )", "huckle( )", "mango( )"],
-    answer: "splice( )"
+    title: "Why can’t you hear a pterodactyl go to the bathroom?",
+    choices: [
+        {
+            text: "Because they're extinct.", correct: false
+        },
+        {
+            text: "Because fossils don't move.", correct: false
+        },
+        {
+            text: "Because the “P” is silent!", correct: true
+        },
+        {
+            text: "Because science.", correct: false
+        },
+    ]
 },
 {
-    title: "What time of the year should you plant a garden?",
-    choices: ["spring( )", "fall( )", " winter( )", "summer( )"],
-    answer: "spring( )"
-}
+    title: "How does NASA organize a party?",
+    choices: [
+        {
+            text: "They planet.", correct: true
+        },
+        {
+            text: "Aliens (wee-woo).", correct: false
+        },
+        {
+            text: "Outer space bruh.", correct: false
+        },
+        {
+            text: "An event planner.", correct: false
+        }
+    ]
+    
+},
 ]
 
 //start the countdown timer once user clicks 'start' button
@@ -50,12 +99,19 @@ var questions = [{
 
 //clear the score if user selects 'clear score'
 
-var timerEl = document.querySelector(".timer")
-var containerEl = document.querySelector(".container")
-var quizEl = document.querySelector(".quiz")
-var questionEl = document.querySelector(".question")
-var buttonEl = document.querySelectorAll(".button")
-console.log(buttonEl)
+var domRefs = { 
+     timerEl : document.querySelector(".timer"),
+     containerEl : document.querySelector(".container"),
+     welcomeEl : document.querySelector(".welcome"),
+     quizEl : document.querySelector(".quiz"),
+     questionEl : document.querySelector(".question"),
+     buttonEl : document.querySelectorAll(".button"),
+     messageEl : document.querySelectorAll(".message"),
+}
+
+document.querySelector(".start-button").addEventListener("click", startGame)
+
+document.querySelector(".answers").addEventListener("click", handleUserAnswer)
 
 var timer = 75
 var score = 0
@@ -65,22 +121,28 @@ var currentQuestionNumber = 0
 var currentQuestion
 var answers
 
-function game () {
+function startGame () {
+    // hide welcome screen
+    domRefs.welcomeEl.classList.add("hidden")
+    // display quiz element
+    domRefs.quizEl.classList.remove("hidden")
+    active = true
+    startRound()
+}
+
+function startRound () {
+    renderMessage("Neato!")
     if (!active) {
+        console.log("endGame")
         // end game
         return
     }
-    currentQuestion = questions[currentQuestion]
+    currentQuestion = questions[currentQuestionNumber]
     answers = currentQuestion.choices
-
-    questionEl.innerHTML = currentQuestion.title
-
-    for(var i = 0; i < answers.length; i++){
-        buttonEl[i].innerHTML = answers[i].text
-    }
+    renderCurrentQuestionData()
 }
 
-function handleClick (event){
+function handleUserAnswer (event){
     var answerIndex = event.target.getAttribute("data-index")
     if (answers [answerIndex].correct === true) {
         //handle correct answer
@@ -88,7 +150,29 @@ function handleClick (event){
         //handle incorrect answer
     }
     currentQuestionNumber++
-    game()
+    startRound()
+}
+
+function renderCurrentQuestionData (){
+    console.log(domRefs.buttonEl)
+    domRefs.questionEl.innerHTML = currentQuestion.title
+
+    for(var i = 0; i < answers.length; i++){
+        domRefs.buttonEl[i].innerHTML = answers[i].text
+    }
+}
+
+// render a message "correct" or "wrong" based on user input
+// needs to unmount after 2 seconds
+
+function renderMessage (message){
+    console.log(domRefs.messageEl)
+    domRefs.messageEl.innerHTML = message
+    // setTimeout(unRenderMessage,2000)
+}
+
+function unRenderMessage (){
+    domRefs.messageEl.innerHTML = ""
 }
 
 /**
@@ -118,7 +202,7 @@ function handleClick (event){
  * If question invalid, end game
  *
  * When user clicks answer:
- * var answer index = event.target.data-set["index"] - look up how to access via w3schools
+ * var answer index = event.target.dataset["index"] - look up how to access via w3schools
  * If current answers[answer index].correct === true
  * Correct- add 20 points
  * Else
