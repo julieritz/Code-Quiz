@@ -10,7 +10,7 @@
 
 <body>
   <nav class="navbar">
-    <a class="highscore" href="#">View Highscores</a>
+    <button type="button" class="highscore">View Highscores</button>
     <div class="timer">Time: <span id="timeLeft">0</span></div>
   </nav>
   <div class="container">
@@ -29,26 +29,26 @@
         <button type="button" data-index="3" class=" button">Button4</button>
       </div>
     </div>
-  <span class="message"></span>
-  <div class="score hidden">
-    <h2>Game over!</h2>
-    <h3>You got <span class="finalscore"></span> out of 100.</h3>
-    <input type="text" class="name" placeholder="Initials">
-    <button type="button" class="scorebutton">Keep My Score</button>
-    <button type="button" class="clearbutton">Clear</button>
-  </div>
-  <div class="highscore-table">
-    <table>
-      <thead>
-        <tr>
-          <td>Initials:</td>
-          <td>Highscore:</td>
-        </tr>
-      </thead>
-      <tbody class="table-body">
-      </tbody>
-    </table>
-  </div>
+    <span class="message"></span>
+    <div class="score hidden">
+      <h2>Game over!</h2>
+      <h3>You got <span class="finalscore"></span> out of 100.</h3>
+      <input type="text" class="name" placeholder="Initials">
+      <button type="button" class="scorebutton">Keep My Score</button>
+      <button type="button" class="clearbutton">Clear</button>
+    </div>
+    <div class="highscore-table hidden">
+      <table>
+        <thead>
+          <tr>
+            <td>Initials:</td>
+            <td>Highscore:</td>
+          </tr>
+        </thead>
+        <tbody class="table-body">
+        </tbody>
+      </table>
+    </div>
   </div>
   <script src="./script.js"></script>
 </body>

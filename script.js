@@ -1,4 +1,4 @@
-//questions, choices and answers
+//Questions, choices and answers
 var questions = [{
     title: "What did the Buddhist say to the hot dog vendor?",
     choices: [
@@ -21,9 +21,9 @@ var questions = [{
     choices: [
         {
             text: "His back pocket.", correct: false
-        }, 
-        {   
-            text: "Who knows?", correct:false
+        },
+        {
+            text: "Who knows?", correct: false
         },
         {
             text: "On base.", correct: false
@@ -83,19 +83,21 @@ var questions = [{
             text: "An event planner.", correct: false
         }
     ]
-    
+
 },
 ]
 
-var domRefs = { 
-     timerEl : document.querySelector("#timeLeft"),
-     containerEl : document.querySelector(".container"),
-     welcomeEl : document.querySelector(".welcome"),
-     quizEl : document.querySelector(".quiz"),
-     questionEl : document.querySelector(".question"),
-     buttonEl : document.querySelectorAll(".button"),
-     messageEl : document.querySelector(".message"),
-     scoreEl : document.querySelector(".score"),
+//DOM references
+var domRefs = {
+    timerEl: document.querySelector("#timeLeft"),
+    containerEl: document.querySelector(".container"),
+    welcomeEl: document.querySelector(".welcome"),
+    quizEl: document.querySelector(".quiz"),
+    questionEl: document.querySelector(".question"),
+    buttonEl: document.querySelectorAll(".button"),
+    messageEl: document.querySelector(".message"),
+    scoreEl: document.querySelector(".score"),
+    highscoreEl: document.querySelector(".highscore-table")
 }
 
 document.querySelector(".start-button").addEventListener("click", startGame)
@@ -112,12 +114,10 @@ var currentQuestionNumber = 0;
 var currentQuestion;
 var answers;
 
-// link view high score 
-// scoreEl.addEventListener("click", ?????);
 addListeners();
 createScoreRows();
 
-function startGame () {
+function startGame() {
     // hide welcome screen
     domRefs.welcomeEl.classList.add("hidden")
     // display quiz element
@@ -127,7 +127,7 @@ function startGame () {
     timerId = setInterval(clockTick, 1000)
 }
 
-function clockTick (){
+function clockTick() {
     time--;
     domRefs.timerEl.textContent = time;
     if (time <= 0) {
@@ -136,7 +136,7 @@ function clockTick (){
     }
 }
 
-function startRound () {
+function startRound() {
     currentQuestion = questions[currentQuestionNumber]
     if (!currentQuestion) {
         endGame();
@@ -146,43 +146,43 @@ function startRound () {
     renderCurrentQuestionData()
 }
 
-function handleUserAnswer (event){
+function handleUserAnswer(event) {
     var answerIndex = event.target.getAttribute("data-index")
-    if (answers [answerIndex].correct === true) {
+    //handle correct answer
+    if (answers[answerIndex].correct === true) {
         score += 20;
         renderMessage("correct")
     } else {
+        //handle incorrect answer
         time -= 10;
         renderMessage("incorrect")
-        //handle incorrect answer
     }
     currentQuestionNumber++;
     startRound()
 }
 
-function renderCurrentQuestionData (){
+function renderCurrentQuestionData() {
     console.log(domRefs.buttonEl)
     domRefs.questionEl.innerHTML = currentQuestion.title
 
-    for(var i = 0; i < answers.length; i++){
+    for (var i = 0; i < answers.length; i++) {
         domRefs.buttonEl[i].innerHTML = answers[i].text
     }
 }
 
 // render a message "correct" or "wrong" based on user input
-// needs to unmount after 2 seconds
 
-function renderMessage (message){
+function renderMessage(message) {
     console.log(domRefs.messageEl)
     domRefs.messageEl.innerHTML = message
-    setTimeout(unRenderMessage,1000)
+    setTimeout(unRenderMessage, 1000)
 }
 
-function unRenderMessage (){
+function unRenderMessage() {
     domRefs.messageEl.innerHTML = ""
 }
 
-function endGame () {
+function endGame() {
     // hide quiz element
     domRefs.quizEl.classList.add("hidden")
     // display score element
@@ -192,7 +192,7 @@ function endGame () {
     document.querySelector(".finalscore").innerHTML = score
 }
 
-function loadHighscores (){
+function loadHighscores() {
     var highscores = localStorage.getItem("highscores")
     if (!highscores) {
         highscores = []
@@ -203,19 +203,20 @@ function loadHighscores (){
     return highscores
 }
 
-function createScoreRows () {
+function createScoreRows() {
     var highscores = loadHighscores()
     var scorerows = []
     var tablebody = document.querySelector(".table-body")
     console.log(highscores)
     for (var i = 0; i < highscores.length; i++) {
         console.log(highscores[i])
-        var scorerow = createScoreRow (highscores[i])
+        var scorerow = createScoreRow(highscores[i])
         tablebody.appendChild(scorerow)
     }
 }
 
-function createScoreRow (highscore) {
+//creates the high-score table
+function createScoreRow(highscore) {
     var scorerow = document.createElement("tr")
     var initialcell = document.createElement("td")
     initialcell.innerHTML = highscore.initials
@@ -226,27 +227,39 @@ function createScoreRow (highscore) {
     return scorerow
 }
 
+//stores the scores in local storage
 function storeScore(initials) {
     var highscores = loadHighscores()
-    var newscore = {initials, score}
+    var newscore = { initials, score }
     highscores.push(newscore)
     highscores = JSON.stringify(highscores)
     localStorage.setItem("highscores", highscores);
-    // localStorage.setItem("highscoreName",  document.getElementById("name").value);
-    // showScore();
 }
 
-//clears the score name and value in the local storage if the user selects 'clear score'
+//clears the score name and value in the local storage
 function clearScore() {
     localStorage.setItem("highscores", JSON.stringify([]));
 }
 
-function addListeners () {
-    document.querySelector(".scorebutton").addEventListener("click",function(event){
+//links view high scores to the stored values
+function linkScores() {
+    domRefs.welcomeEl.classList.add("hidden")
+    domRefs.quizEl.classList.add("hidden")
+    domRefs.scoreEl.classList.add("hidden")
+    domRefs.highscoreEl.classList.remove("hidden")
+    active = false
+    createScoreRow()
+}
+
+
+function addListeners() {
+    document.querySelector(".scorebutton").addEventListener("click", function (event) {
         var name = document.querySelector(".name").value
         storeScore(name)
     })
-    document.querySelector(".clearbutton").addEventListener("click",clearScore)
+    document.querySelector(".clearbutton").addEventListener("click", clearScore)
+    document.querySelector(".highscore-table").addEventListener("click", clearScore)
+    document.querySelector(".highscore").addEventListener("click", linkScores)
 }
 
 /**

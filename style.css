@@ -39,7 +39,17 @@ body {
     margin-top: 10px;
 }
 
+.highscore {
+    background-color: aquamarine;
+    padding: 7px;
+    margin-top: 10px;
+}
+
 .quiz {
+    margin-top: 90px;
+}
+
+.highscore-table {
     margin-top: 90px;
 }
 
