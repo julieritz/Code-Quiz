@@ -33,28 +33,14 @@ body {
     margin-bottom: 10px;
 }
 
-.button-1 {
+.button {
     background-color: aquamarine;
     padding: 7px;
     margin-top: 10px;
 }
 
-.button-2 {
-    background-color: aquamarine;
-    padding: 7px;
-    margin-top: 10px;
-}
-
-.button-3 {
-    background-color: aquamarine;
-    padding: 7px;
-    margin-top: 10px;
-}
-
-.button-4 {
-    background-color: aquamarine;
-    padding: 7px;
-    margin-top: 10px;
+.quiz {
+    margin-top: 90px;
 }
 
 .hidden {

@@ -11,7 +11,7 @@
 <body>
   <nav class="navbar">
     <a class="highscore" href="#">View Highscores</a>
-    <div class="timer">Time:</div>
+    <div class="timer">Time: <span id="timeLeft">0</span></div>
   </nav>
   <div class="container">
     <div class="welcome">
@@ -20,7 +20,7 @@
         answers will take 10 seconds away from the clock!</p>
       <button type="button" class="start-button">Start</button>
     </div>
-    <div class="quiz hidden">
+    <div class="quiz hidden" id="quiz">
       <div class="question">Question</div>
       <div class="answers">
         <button type="button" data-index="0" class=" button">Button1</button>
@@ -28,8 +28,27 @@
         <button type="button" data-index="2" class=" button">Button3</button>
         <button type="button" data-index="3" class=" button">Button4</button>
       </div>
-      <span class= "message"></span>
     </div>
+  <span class="message"></span>
+  <div class="score hidden">
+    <h2>Game over!</h2>
+    <h3>You got <span class="finalscore"></span> out of 100.</h3>
+    <input type="text" class="name" placeholder="Initials">
+    <button type="button" class="scorebutton">Keep My Score</button>
+    <button type="button" class="clearbutton">Clear</button>
+  </div>
+  <div class="highscore-table">
+    <table>
+      <thead>
+        <tr>
+          <td>Initials:</td>
+          <td>Highscore:</td>
+        </tr>
+      </thead>
+      <tbody class="table-body">
+      </tbody>
+    </table>
+  </div>
   </div>
   <script src="./script.js"></script>
 </body>

@@ -87,39 +87,35 @@ var questions = [{
 },
 ]
 
-//start the countdown timer once user clicks 'start' button
-
-//loop through the questions
-
-//store scores on local storage
-
-//deduct 10 seconds from timer if user chooses incorrect answer
-
-//increase score by 20 points if user chooses correct answer
-
-//clear the score if user selects 'clear score'
-
 var domRefs = { 
-     timerEl : document.querySelector(".timer"),
+     timerEl : document.querySelector("#timeLeft"),
      containerEl : document.querySelector(".container"),
      welcomeEl : document.querySelector(".welcome"),
      quizEl : document.querySelector(".quiz"),
      questionEl : document.querySelector(".question"),
      buttonEl : document.querySelectorAll(".button"),
-     messageEl : document.querySelectorAll(".message"),
+     messageEl : document.querySelector(".message"),
+     scoreEl : document.querySelector(".score"),
 }
 
 document.querySelector(".start-button").addEventListener("click", startGame)
 
 document.querySelector(".answers").addEventListener("click", handleUserAnswer)
 
-var timer = 75
-var score = 0
-var active = false
+var time = 75;
+var score = 0;
+var active = false;
+var timerId;
+var correct = [];
 
-var currentQuestionNumber = 0
-var currentQuestion
-var answers
+var currentQuestionNumber = 0;
+var currentQuestion;
+var answers;
+
+// link view high score 
+// scoreEl.addEventListener("click", ?????);
+addListeners();
+createScoreRows();
 
 function startGame () {
     // hide welcome screen
@@ -127,17 +123,25 @@ function startGame () {
     // display quiz element
     domRefs.quizEl.classList.remove("hidden")
     active = true
-    startRound()
+    startRound();
+    timerId = setInterval(clockTick, 1000)
+}
+
+function clockTick (){
+    time--;
+    domRefs.timerEl.textContent = time;
+    if (time <= 0) {
+        domRefs.timerEl.textContent = "";
+        endGame();
+    }
 }
 
 function startRound () {
-    renderMessage("Neato!")
-    if (!active) {
-        console.log("endGame")
-        // end game
+    currentQuestion = questions[currentQuestionNumber]
+    if (!currentQuestion) {
+        endGame();
         return
     }
-    currentQuestion = questions[currentQuestionNumber]
     answers = currentQuestion.choices
     renderCurrentQuestionData()
 }
@@ -145,11 +149,14 @@ function startRound () {
 function handleUserAnswer (event){
     var answerIndex = event.target.getAttribute("data-index")
     if (answers [answerIndex].correct === true) {
-        //handle correct answer
+        score += 20;
+        renderMessage("correct")
     } else {
+        time -= 10;
+        renderMessage("incorrect")
         //handle incorrect answer
     }
-    currentQuestionNumber++
+    currentQuestionNumber++;
     startRound()
 }
 
@@ -168,11 +175,78 @@ function renderCurrentQuestionData (){
 function renderMessage (message){
     console.log(domRefs.messageEl)
     domRefs.messageEl.innerHTML = message
-    // setTimeout(unRenderMessage,2000)
+    setTimeout(unRenderMessage,1000)
 }
 
 function unRenderMessage (){
     domRefs.messageEl.innerHTML = ""
+}
+
+function endGame () {
+    // hide quiz element
+    domRefs.quizEl.classList.add("hidden")
+    // display score element
+    domRefs.scoreEl.classList.remove("hidden")
+    active = false
+    clearInterval(timerId)
+    document.querySelector(".finalscore").innerHTML = score
+}
+
+function loadHighscores (){
+    var highscores = localStorage.getItem("highscores")
+    if (!highscores) {
+        highscores = []
+    }
+    else {
+        highscores = JSON.parse(highscores)
+    }
+    return highscores
+}
+
+function createScoreRows () {
+    var highscores = loadHighscores()
+    var scorerows = []
+    var tablebody = document.querySelector(".table-body")
+    console.log(highscores)
+    for (var i = 0; i < highscores.length; i++) {
+        console.log(highscores[i])
+        var scorerow = createScoreRow (highscores[i])
+        tablebody.appendChild(scorerow)
+    }
+}
+
+function createScoreRow (highscore) {
+    var scorerow = document.createElement("tr")
+    var initialcell = document.createElement("td")
+    initialcell.innerHTML = highscore.initials
+    scorerow.appendChild(initialcell)
+    var scorecell = document.createElement("td")
+    scorecell.innerHTML = highscore.score
+    scorerow.appendChild(scorecell)
+    return scorerow
+}
+
+function storeScore(initials) {
+    var highscores = loadHighscores()
+    var newscore = {initials, score}
+    highscores.push(newscore)
+    highscores = JSON.stringify(highscores)
+    localStorage.setItem("highscores", highscores);
+    // localStorage.setItem("highscoreName",  document.getElementById("name").value);
+    // showScore();
+}
+
+//clears the score name and value in the local storage if the user selects 'clear score'
+function clearScore() {
+    localStorage.setItem("highscores", JSON.stringify([]));
+}
+
+function addListeners () {
+    document.querySelector(".scorebutton").addEventListener("click",function(event){
+        var name = document.querySelector(".name").value
+        storeScore(name)
+    })
+    document.querySelector(".clearbutton").addEventListener("click",clearScore)
 }
 
 /**
